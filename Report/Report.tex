@@ -39,6 +39,73 @@ Our task in the TCBVRP\footnote{Programming Exercise / ILOG CPLEX Tutorial, Benj
 For this problem we developed the following integer programming formulations, which we solved with CPLEX. 
 
 \section*{Single Commodity Flow (SCF)}
+\subsection*{Variables}
+\begin{align*}
+n &: \text{Total number of Nodes} \\
+m &: \text{Total number of Nodes} \\
+T &: \text{Timelimit for one vehicle} \\
+N &: \text{Set of all nodes} \\
+S &: \text{Set of supply nodes} \\
+D &: \text{Set of demand nodes} \\
+V &: \text{Set of vehicles} \\
+\end{align*}
+
+\subsection*{Declaration of the decision variables}
+\begin{equation*}
+x_{ij}^k : 
+	\begin{cases}
+	1 & \text{if edge from i to j is crossed by vehicle k} \\
+	0 & \text{otherwise} \\
+	\end{cases}
+\end{equation*}
+
+\subsection*{Objective Function}
+Minimize the total time of all used vehicles
+\begin{equation}
+min. \quad \sum_{k=1}^m \sum_{i=1}^n  \sum_{j=1}^n x_{ij}^k * d_{ij}
+\end{equation}
+
+\subsection*{Constraints}
+Für jedes Fahrzeug muss das timelimit T eingehalten werden:
+\begin{equation}
+\sum_{i=1}^n  \sum_{j=1}^n x_{ij}^k * d_{ij} <= T		\quad \quad		\forall k \in V 
+\end{equation}
+
+Jeder Demand muss von einem Supply aus angefahren werden
+\begin{equation}
+\sum_{i \in S} \sum_{k \in V} x_{ij}^k = 1		\quad 
+\quad		\forall j \in D
+\end{equation}
+
+Supplies dürfen maximal einmal angefahren werden - von Depot aus oder Demand
+\begin{equation}
+\sum_{i \in D} \sum_{k \in V} x_{ij}^k <= 1		\quad 
+\quad		\forall j \in S
+\end{equation}
+
+Zumindest ein Fahrzeug muss das Depot verlassen
+\begin{equation}
+\sum_{k \in V} \sum_{j \in S} x_{0j}^k => 0		\quad 
+\end{equation}
+
+Die Anzahl der Fahrzeuge die in einen Node reinfahren muss gleich sein der Summe die rausfahren
+\begin{equation}
+\sum_{j=1}^n x_{ij}^k = \sum_{j=1}^n x_{ji}^k		\quad 
+\quad		\forall i \in N 
+\quad		\forall k \in V 
+\end{equation}
+
+Sub-tour Elimination Constraint
+\begin{equation}
+\sum_{j, j\neq 1} f_{1j} = n - 1
+\end{equation}
+\begin{equation}
+\sum_{i, i\neq j} f_{ij} - \sum_{l, l\neq j} f_{lj} <= 1 \quad \quad \forall j \in N \setminus {1}
+\end{equation}
+\begin{equation}
+0 \leq f_{ij} \leq (n - 1) * x_{ij} \quad \quad \forall i,j \in N, i \neq j
+\end{equation}
+
 
 \section*{Multi Commodity Flow (MCF)}
 
@@ -59,19 +126,19 @@ For this problem we developed the following integer programming formulations, wh
 				10	&	480	&	2	&	308		&		&		\\
 				10	&	240	&	2	&	275		&		&		\\
 				10	&	480	&	2	&	252		&		&		\\
-				20	&	240	&	2	&	533		&		&		\\
+				20	&	240	&	3	&	533		&		&		\\
 				20	&	480	&	2	&	517		&		&		\\
-				20	&	240	&	2	&	594		&		&		\\
+				20	&	240	&	4	&	594		&		&		\\
 				20	&	480	&	2	&	566		&		&		\\
-				30	&	240	&	2	&	763		&		&		\\
+				30	&	240	&	4	&	763		&		&		\\
 				30	&	480	&	2	&	717		&		&		\\
-				30	&	240	&	2	&	896		&		&		\\
+				30	&	240	&	4	&	896		&		&		\\
 				30	&	480	&	2	&	852		&		&		\\
-				60	&	360	&	2	&	1699	&		&		\\
-				60	&	480	&	2	&	1671	&		&		\\
-				90	&	480	&	2	&	2031	&		&		\\
-				120	&	480	&	2	&	2663	&		&		\\
-				180	&	720	&	2	&	5782	&		&		\\
+				60	&	360	&	6	&	1699	&		&		\\
+				60	&	480	&	4	&	1671	&		&		\\
+				90	&	480	&	8	&	2031	&		&		\\
+				120	&	480	&	8	&	2663	&		&		\\
+				180	&	720	&	10	&	5782	&		&		\\
 				
 			\hline 
 		\end{tabular}
@@ -91,19 +158,19 @@ For this problem we developed the following integer programming formulations, wh
 				10	&	480	&	2	&	308		&		&		\\
 				10	&	240	&	2	&	275		&		&		\\
 				10	&	480	&	2	&	252		&		&		\\
-				20	&	240	&	2	&	533		&		&		\\
+				20	&	240	&	3	&	533		&		&		\\
 				20	&	480	&	2	&	517		&		&		\\
-				20	&	240	&	2	&	594		&		&		\\
+				20	&	240	&	4	&	594		&		&		\\
 				20	&	480	&	2	&	566		&		&		\\
-				30	&	240	&	2	&	763		&		&		\\
+				30	&	240	&	4	&	763		&		&		\\
 				30	&	480	&	2	&	717		&		&		\\
-				30	&	240	&	2	&	896		&		&		\\
+				30	&	240	&	4	&	896		&		&		\\
 				30	&	480	&	2	&	852		&		&		\\
-				60	&	360	&	2	&	1699	&		&		\\
-				60	&	480	&	2	&	1671	&		&		\\
-				90	&	480	&	2	&	2031	&		&		\\
-				120	&	480	&	2	&	2663	&		&		\\
-				180	&	720	&	2	&	5782	&		&		\\
+				60	&	360	&	6	&	1699	&		&		\\
+				60	&	480	&	4	&	1671	&		&		\\
+				90	&	480	&	8	&	2031	&		&		\\
+				120	&	480	&	8	&	2663	&		&		\\
+				180	&	720	&	10	&	5782	&		&		\\
 				
 			\hline 
 		\end{tabular}
