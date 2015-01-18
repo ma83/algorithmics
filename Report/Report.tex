@@ -38,7 +38,6 @@
 Our task in the TCBVRP\footnote{Programming Exercise / ILOG CPLEX Tutorial, Benjamin Biesinger, Bin Hu, Gunther R. Raidl, Algorithms and Data Structures Group Institute of Computer Graphics and Algorithms, Vienna University of Technology, VU Algorithmics, WS 2014/15} is to supply a given number of demand nodes by minimizing the unit of time by the number of vehicles used. A vehicle tour starts at the depot node and after an alternating ordering of getting first to a supply and then to a demand node the tour finishes at the depot again. The time capacity of every crossed edge is added up and has a given constraint of time limit per vehicle that must not be exceeded. Aim is to minimize the sum of time periods of all used vehicles in the graph.\\
 For this problem we developed the following integer programming formulations, which we solved with CPLEX. 
 
-\section*{Single Commodity Flow (SCF)}
 \subsection*{Variables}
 \begin{align*}
 n &: \text{Total number of Nodes} \\
@@ -66,50 +65,170 @@ min. \quad \sum_{k=1}^m \sum_{i=1}^n  \sum_{j=1}^n x_{ij}^k * d_{ij}
 \end{equation}
 
 \subsection*{Constraints}
-Für jedes Fahrzeug muss das timelimit T eingehalten werden:
+Für jedes Fahrzeug muss das timelimit T eingehalten werden [TODO short description]
 \begin{equation}
-\sum_{i=1}^n  \sum_{j=1}^n x_{ij}^k * d_{ij} <= T		\quad \quad		\forall k \in V 
+\sum_{i=1}^n  \sum_{j=1}^n x_{ij}^k * d_{ij} \leq T		\quad \quad		\forall k \in V 
 \end{equation}
 
-Jeder Demand muss von einem Supply aus angefahren werden
+Jeder Demand muss von einem Supply aus angefahren werden [TODO short description]
 \begin{equation}
 \sum_{i \in S} \sum_{k \in V} x_{ij}^k = 1		\quad 
 \quad		\forall j \in D
 \end{equation}
 
-Supplies dürfen maximal einmal angefahren werden - von Depot aus oder Demand
+Supplies dürfen maximal einmal angefahren werden - von Depot aus oder Demand [TODO short description]
 \begin{equation}
-\sum_{i \in D} \sum_{k \in V} x_{ij}^k <= 1		\quad 
+\sum_{i \in D} \sum_{k \in V} x_{ij}^k \leq 1		\quad 
 \quad		\forall j \in S
 \end{equation}
 
-Zumindest ein Fahrzeug muss das Depot verlassen
+Die Ausgehenden Kanten vom Depot müssen größer 1 sein [TODO short description]
 \begin{equation}
-\sum_{k \in V} \sum_{j \in S} x_{0j}^k => 0		\quad 
+\sum_{k \in V} \sum_{j \in S} x_{1j}^k \geq 1		\quad 
 \end{equation}
 
-Die Anzahl der Fahrzeuge die in einen Node reinfahren muss gleich sein der Summe die rausfahren
+Ein Fahrzeug darf nicht 2mal losfahren vom Depot [TODO short description]
+\begin{equation}
+\sum_{j \in S} x_{1j}^k \leq 1		\quad 
+\quad		\forall k \in V 
+\end{equation}
+
+Die Anzahl der Fahrzeuge die in einen Node reinfahren muss gleich sein der Summe die rausfahren [TODO short description]
 \begin{equation}
 \sum_{j=1}^n x_{ij}^k = \sum_{j=1}^n x_{ji}^k		\quad 
 \quad		\forall i \in N 
 \quad		\forall k \in V 
 \end{equation}
 
-Sub-tour Elimination Constraint
+Man darf vom Depot nur zu Supplies fahren [TODO short description]
 \begin{equation}
-\sum_{j, j\neq 1} f_{1j} = n - 1
+x_{1j}^k = 0		\quad 
+\quad		\forall j \in D
+\quad		\forall k \in V 
 \end{equation}
+
+Man darf von Demand nur zu Supplie oder Depot fahren [TODO short description]
 \begin{equation}
-\sum_{i, i\neq j} f_{ij} - \sum_{l, l\neq j} f_{lj} <= 1 \quad \quad \forall j \in N \setminus {1}
+\sum_{i}^n x_{ij}^k = 0		\quad 
+\quad		\forall j \in D
+\quad		\forall k \in V 
 \end{equation}
+
+Man darf von Supply nur zu Demand fahren [TODO short description]
 \begin{equation}
-0 \leq f_{ij} \leq (n - 1) * x_{ij} \quad \quad \forall i,j \in N, i \neq j
+\sum_{j,j \not\in D}^n x_{ij}^k = 0		\quad 
+\quad		\forall i \in S
+\quad		\forall k \in V 
+\end{equation}
+
+Alle Demand Nodes müssen 1 mal angefahren werden [TODO short description]
+\begin{equation}
+\sum_{k}^m \sum_{j}^n x_{ji}^k = 1		\quad 
+\quad		\forall i \in D 
+\end{equation}
+
+
+\section*{Single Commodity Flow (SCF)}
+\subsection*{Declaration of the decision variables}
+\begin{equation*}
+f_{ij}^k : 
+	\begin{cases}
+	\text{represents the amount of "flow" on arc (i,j)}
+	\end{cases}
+\end{equation*}
+
+\subsection*{Sub-tour Elimination Constraint}
+a[TODO short description]
+\begin{equation}
+\sum_{j, j\neq 1} f_{1j}^k = n - 1
+\quad \forall k \in V 
+\end{equation}
+[TODO short description]
+\begin{equation}
+\sum_{i, i\neq j} f_{ij}^k - \sum_{h, h\neq j} f_{jh}^k \leq 1 \quad 
+\quad \forall j \in N \setminus {1}
+\quad \forall k \in V 
+\end{equation}
+[TODO short description]
+\begin{equation}
+0 \leq f_{ij} \leq (n - 1) * x_{ij}^k \quad 
+\quad \forall i,j \in N, i \neq j
+\quad \forall k \in V 
 \end{equation}
 
 
 \section*{Multi Commodity Flow (MCF)}
+\subsection*{Declaration of the decision variables}
+\begin{equation*}
+f_{ij}^{kl} : 
+	\begin{cases}
+	\text{represent the amount of "flow" on arc (i,j) for commodity l} \\
+	\end{cases}
+\end{equation*}
 
-\section*{Miller-Tucker-Zemlin subtour elimination constraints (MTZ)}
+\subsection*{Sub-tour Elimination Constraint}
+Kante muss verwendet werden [TODO short description]
+\begin{equation}
+f_{ij}^{kl} \leq x_{ij}^k		 \quad 
+\quad \forall l \in N \setminus {1}
+\quad \forall i \in N 
+\quad \forall j \in N , i \neq j
+\quad \forall k \in V 
+\end{equation}
+
+Der Ausgesendete Commodity muss bei der bestimmten l == 1 sein [TODO short description]
+\begin{equation}
+\sum_{i, i \neq l}^n f_{il}^{kl} = 1		 \quad 
+\quad \forall l \in N \setminus {1}
+\quad \forall k \in V 
+\end{equation}
+
+Der Depotnode sendet an jede Commodity max 1 aus [TODO short description]
+\begin{equation}
+\sum_{i, i \neq 1}^n f_{1i}^{kl} = 1		 \quad 
+\quad \forall l \in N \setminus {1}
+\quad \forall k \in V 
+\end{equation}
+
+Jede Commodity muss verbraucht werden [TODO short description]
+\begin{equation}
+\sum_{i, i \neq 1}^n f_{i1}^{kl} = 0		 \quad 
+\quad \forall l \in N \setminus {1}
+\quad \forall k \in V 
+\end{equation}
+
+[vorletzter constraint nicht ganz klar woher? Ich glaube der gehört weg Bitte mit c++ file kontrollieren]
+\begin{equation}
+\sum_{i}^n f_{li}^{kl} = 0		 \quad 
+\quad \forall l \in N 
+\quad \forall k \in V 
+\end{equation}
+
+letzter constraint [TODO short description]
+\begin{equation}
+\sum_{i, i \neq j}^n f_{ij}^{kl} - \sum_{i, i \neq j}^n f_{ji}^{kl} = 0		 \quad 
+\quad \forall l \in N \setminus {1}
+\quad \forall j \in N , j \neq l
+\quad \forall k \in V 
+\end{equation}
+
+
+\section*{Miller-Tucker-Zemlin subtour elimination constraints (MTZ)}\subsection*{Declaration of the decision variables}
+\begin{equation*}
+r_{ik} : 
+	\begin{cases}
+	\text{represents the rank of node to describe the flow}
+	\end{cases}
+\end{equation*}
+
+\subsection*{Sub-tour Elimination Constraint}
+a[TODO short description]
+\begin{equation}
+r_{ik} + n * x_{ij}^k \leq r_{ik} + (n - 1) \quad 
+\quad \forall i \in N \setminus {1}
+\quad \forall j \in N \setminus {1} , i \neq j
+\quad \forall k \in V 
+\end{equation}
 
 \section*{Results and Discussion}
 
@@ -145,6 +264,36 @@ Sub-tour Elimination Constraint
 	\label{tab:scf}
 \end{table}
 
+\begin{table}[h!]
+	\centering
+	\caption{Solutions with the Multi Commodity Flow Conservation}
+		\begin{tabular}{|c|r|r||c|c|c|}
+			\hline\
+		Nodes & Time & Vehicles	& Objective Function & \# of Branch \& Bound & Runtime\\
+   		\multicolumn{1}{|c|}{[n]} & \multicolumn{1}{c|}{[sec]} & \multicolumn{1}{c||}{[m]} & \multicolumn{1}{c|}{Values} & \multicolumn{1}{c|}{Nodes} & \multicolumn{1}{c|}{[sec]} \\
+			\hline 
+				10	&	240	&	2	&	347		&		&		\\
+				10	&	480	&	2	&	308		&		&		\\
+				10	&	240	&	2	&	275		&		&		\\
+				10	&	480	&	2	&	252		&		&		\\
+				20	&	240	&	3	&	533		&		&		\\
+				20	&	480	&	2	&	517		&		&		\\
+				20	&	240	&	4	&	594		&		&		\\
+				20	&	480	&	2	&	566		&		&		\\
+				30	&	240	&	4	&	763		&		&		\\
+				30	&	480	&	2	&	717		&		&		\\
+				30	&	240	&	4	&	896		&		&		\\
+				30	&	480	&	2	&	852		&		&		\\
+				60	&	360	&	6	&	1699	&		&		\\
+				60	&	480	&	4	&	1671	&		&		\\
+				90	&	480	&	8	&	2031	&		&		\\
+				120	&	480	&	8	&	2663	&		&		\\
+				180	&	720	&	10	&	5782	&		&		\\
+				
+			\hline 
+		\end{tabular}
+	\label{tab:scf}
+\end{table}
 
 \begin{table}[h!]
 	\centering
