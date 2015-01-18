@@ -1,0 +1,116 @@
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{scrpage2}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[inner=2.5 cm,outer=2.5 cm,top=2.5 cm,bottom=2.5 cm]{geometry}
+\usepackage[small, center]{caption}
+\usepackage{setspace}
+%\usepackage[USenglish]{babel}
+%\usepackage[babel,german=guillemets]{csquotes}
+\usepackage[backend=biber, style=authortitle-comp]{biblatex}
+%\usepackage[sort]{natbib}
+%\bibliographystyle{apalike}
+\bibliography{biblio2}
+
+%For Sourcecode
+\usepackage{listings}
+
+
+
+\begin{document}
+
+\pagestyle{scrheadings}
+\ohead{Algorithmics, Prog. Ex., WS 14/15} 
+\ihead{\pagemark} 
+\pagenumbering{roman}
+
+\author{Stefan  \and Robin Melán}
+\title{Time-Constrained Bipartite Vehicle Routing Problem (TCBVRP)}
+\maketitle
+\vspace{0.5cm}
+
+\section*{Problem description}
+Our task in the TCBVRP\footnote{Programming Exercise / ILOG CPLEX Tutorial, Benjamin Biesinger, Bin Hu, Gunther R. Raidl, Algorithms and Data Structures Group Institute of Computer Graphics and Algorithms, Vienna University of Technology, VU Algorithmics, WS 2014/15} is to supply a given number of demand nodes by minimizing the unit of time by the number of vehicles used. A vehicle tour starts at the depot node and after an alternating ordering of getting first to a supply and then to a demand node the tour finishes at the depot again. The time capacity of every crossed edge is added up and has a given constraint of time limit per vehicle that must not be exceeded. Aim is to minimize the sum of time periods of all used vehicles in the graph.\\
+For this problem we developed the following integer programming formulations, which we solved with CPLEX. 
+
+\section*{Single Commodity Flow (SCF)}
+
+\section*{Multi Commodity Flow (MCF)}
+
+\section*{Miller-Tucker-Zemlin subtour elimination constraints (MTZ)}
+
+\section*{Results and Discussion}
+
+
+\begin{table}[h!]
+	\centering
+	\caption{Solutions with the Single Commodity Flow Constraints}
+		\begin{tabular}{|c|r|r||c|c|c|}
+			\hline\
+		Nodes & Time & Vehicles	& Objective Function & \# of Branch \& Bound & Runtime\\
+   		\multicolumn{1}{|c|}{[n]} & \multicolumn{1}{c|}{[sec]} & \multicolumn{1}{c||}{[m]} & \multicolumn{1}{c|}{Values} & \multicolumn{1}{c|}{Nodes} & \multicolumn{1}{c|}{[sec]} \\
+			\hline 
+				10	&	240	&	2	&	347		&		&		\\
+				10	&	480	&	2	&	308		&		&		\\
+				10	&	240	&	2	&	275		&		&		\\
+				10	&	480	&	2	&	252		&		&		\\
+				20	&	240	&	2	&	533		&		&		\\
+				20	&	480	&	2	&	517		&		&		\\
+				20	&	240	&	2	&	594		&		&		\\
+				20	&	480	&	2	&	566		&		&		\\
+				30	&	240	&	2	&	763		&		&		\\
+				30	&	480	&	2	&	717		&		&		\\
+				30	&	240	&	2	&	896		&		&		\\
+				30	&	480	&	2	&	852		&		&		\\
+				60	&	360	&	2	&	1699	&		&		\\
+				60	&	480	&	2	&	1671	&		&		\\
+				90	&	480	&	2	&	2031	&		&		\\
+				120	&	480	&	2	&	2663	&		&		\\
+				180	&	720	&	2	&	5782	&		&		\\
+				
+			\hline 
+		\end{tabular}
+	\label{tab:scf}
+\end{table}
+
+
+\begin{table}[h!]
+	\centering
+	\caption{Solutions with the Miller-Tucker-Zemlin subtour elimination constraints}
+		\begin{tabular}{|c|r|r||c|c|c|}
+			\hline\
+		Nodes & Time & Vehicles	& Objective Function & \# of Branch \& Bound & Runtime\\
+   		\multicolumn{1}{|c|}{[n]} & \multicolumn{1}{c|}{[sec]} & \multicolumn{1}{c||}{[m]} & \multicolumn{1}{c|}{Values} & \multicolumn{1}{c|}{Nodes} & \multicolumn{1}{c|}{[sec]} \\
+			\hline 
+				10	&	240	&	2	&	347		&		&		\\
+				10	&	480	&	2	&	308		&		&		\\
+				10	&	240	&	2	&	275		&		&		\\
+				10	&	480	&	2	&	252		&		&		\\
+				20	&	240	&	2	&	533		&		&		\\
+				20	&	480	&	2	&	517		&		&		\\
+				20	&	240	&	2	&	594		&		&		\\
+				20	&	480	&	2	&	566		&		&		\\
+				30	&	240	&	2	&	763		&		&		\\
+				30	&	480	&	2	&	717		&		&		\\
+				30	&	240	&	2	&	896		&		&		\\
+				30	&	480	&	2	&	852		&		&		\\
+				60	&	360	&	2	&	1699	&		&		\\
+				60	&	480	&	2	&	1671	&		&		\\
+				90	&	480	&	2	&	2031	&		&		\\
+				120	&	480	&	2	&	2663	&		&		\\
+				180	&	720	&	2	&	5782	&		&		\\
+				
+			\hline 
+		\end{tabular}
+	\label{tab:scf}
+\end{table}
+
+%\vspace{0.5cm} 
+ 	     	
+
+\end{document}
